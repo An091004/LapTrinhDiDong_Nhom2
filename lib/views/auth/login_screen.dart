@@ -83,7 +83,7 @@ class LoginScreen extends StatelessWidget {
               // Nút đăng nhập
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomScreen(),),);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),),);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green[700],
