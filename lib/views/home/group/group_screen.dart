@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'group_model.dart';
 import 'group_detail_screen.dart';
+import 'add_group_screen.dart';
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen({super.key});
@@ -10,8 +11,8 @@ class GroupScreen extends StatefulWidget {
 }
 
 class _GroupScreenState extends State<GroupScreen> {
-  bool isSearching = false; // Trạng thái toggle tìm kiếm
-  String searchQuery = ""; // Dữ liệu tìm kiếm
+  bool isSearching = false;
+  String searchQuery = "";
 
   final List<GroupModel> groups = [
     GroupModel(id: "1", name: "Gia đình", members: 3),
@@ -19,6 +20,14 @@ class _GroupScreenState extends State<GroupScreen> {
     GroupModel(id: "3", name: "Đồng nghiệp", members: 4),
   ];
 
+  final List<String> allUsers = [
+    "Nguyễn Văn A",
+    "Trần Thị B",
+    "Lê Văn C",
+    "Phạm Thị D",
+    "Hoàng Văn E",
+  ];
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,6 +92,39 @@ class _GroupScreenState extends State<GroupScreen> {
             },
           ),
         ],
+      ),
+      drawer: Drawer(
+        width: MediaQuery.of(context).size.width * 0.65,
+        child: Column(
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Colors.lightBlue),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: const Text(
+                  'Menu Điều Hướng',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            _buildDrawerItem(
+              context,
+              Icons.settings,
+              'Cài đặt',
+              () => Navigator.pop(context),
+            ),
+            _buildDrawerItem(
+              context,
+              Icons.exit_to_app,
+              'Đăng xuất',
+              () => Navigator.pop(context),
+            ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
@@ -151,11 +193,36 @@ class _GroupScreenState extends State<GroupScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => AddGroupScreen(
+                    refreshUI: setState,
+                    groups: groups,
+                    allUsers: allUsers,
+                  ),
+            ),
+          );
+        },
         backgroundColor: Colors.teal,
         elevation: 8,
         child: Icon(Icons.add, size: 30, color: Colors.white),
       ),
+    );
+  }
+
+  Widget _buildDrawerItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+  ) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.black54),
+      title: Text(title, style: const TextStyle(fontSize: 16)),
+      onTap: onTap,
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_qlchitieu/views/auth/register_screen.dart';
+import 'register_screen.dart';
 import 'package:flutter_qlchitieu/views/home/hom_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: ClipOval(
                     child: Image.asset(
-                      'assets/images/logo.jpg',
+                      'assets/images/logo.png',
                       height: 120,
                       width: 120,
                       fit: BoxFit.cover,
@@ -90,9 +90,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   'QUẢN LÍ CHI TIÊU',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 28, // Giảm nhẹ font để tránh thô ráp
+                    fontWeight: FontWeight.w600, // Dùng w600 để mềm mại hơn
                     color: Colors.black87,
+                    letterSpacing: 1.2, // Tăng khoảng cách chữ một chút
+                    fontFamily: 'Helvetica',
+                    shadows: [
+                      Shadow(
+                        blurRadius: 6,
+                        color: Colors.black26,
+                        offset: Offset(2, 2),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 10),

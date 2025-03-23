@@ -1,60 +1,21 @@
 import 'package:flutter/material.dart';
 import 'AccountInfoScreen.dart';
+import 'package:flutter_qlchitieu/views/auth/login_screen.dart';
 
-class SettingsScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+class SettingsScreen extends StatefulWidget {
   SettingsScreen({super.key});
+
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  // This variable controls the dark mode toggle
+  bool isDarkMode = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey, // Gán key vào Scaffold
-      appBar: AppBar(
-        title: const Text(
-          "Cá nhân",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-        ),
-        backgroundColor: Colors.lightBlue,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            _scaffoldKey.currentState?.openDrawer(); // Mở Drawer thông qua key
-          },
-        ),
-        actions: [_buildLogoutButton(context)],
-      ),
-      drawer: Drawer(
-        width: MediaQuery.of(context).size.width * 0.65,
-        child: Column(
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(color: Colors.lightBlue),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: const Text(
-                  'Menu',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            _buildDrawerItem(
-              context,
-              Icons.home,
-              'Trang chủ',
-              () => Navigator.pop(context),
-            ),
-            _buildDrawerItem(
-              context,
-              Icons.settings,
-              'Cài đặt',
-              () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      ),
       body: Column(
         children: [
           _buildProfileHeader(),
@@ -64,7 +25,9 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 _buildMenuItem(
                   context,
-                  icon: Icons.person,
+
+                  icon: Icons.shield,
+
                   text: "Tài khoản và bảo mật",
                   onTap:
                       () => Navigator.push(
@@ -74,18 +37,23 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ),
                 ),
-                _buildMenuItem(
-                  context,
-                  icon: Icons.language,
-                  text: "Ngôn ngữ",
-                  onTap: () {},
+                SwitchListTile(
+                  title: Row(
+                    children: [
+                      const Icon(Icons.brightness_6, color: Colors.blueAccent),
+                      const SizedBox(width: 10),
+                      const Text("Chế độ sáng/tối"),
+                    ],
+                  ),
+                  value: isDarkMode,
+                  onChanged: (bool value) {
+                    setState(() {
+                      isDarkMode = value;
+                    });
+                  },
+                  activeColor: Colors.blueAccent,
                 ),
-                _buildMenuItem(
-                  context,
-                  icon: Icons.lock,
-                  text: "Bảo mật",
-                  onTap: () {},
-                ),
+                _buildLogoutButton(context),
               ],
             ),
           ),
@@ -113,7 +81,7 @@ class SettingsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
               Text(
-                "Nhóm 2_Lap Trinh Di Dong",
+                "Nhóm 2_Lập Trình Dinh Động",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -149,10 +117,12 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  // Move the logout button into the list
   Widget _buildLogoutButton(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.logout, color: Colors.white),
-      onPressed: () {
+    return ListTile(
+      leading: const Icon(Icons.logout, color: Colors.lightBlue),
+      title: const Text("Đăng xuất", style: TextStyle(fontSize: 16)),
+      onTap: () {
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -170,8 +140,12 @@ class SettingsScreen extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    // Xử lý đăng xuất
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
                   },
+
                   child: const Text(
                     "Đăng xuất",
                     style: TextStyle(color: Colors.red),
@@ -182,19 +156,6 @@ class SettingsScreen extends StatelessWidget {
           },
         );
       },
-    );
-  }
-
-  Widget _buildDrawerItem(
-    BuildContext context,
-    IconData icon,
-    String title,
-    VoidCallback onTap,
-  ) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.black54),
-      title: Text(title, style: const TextStyle(fontSize: 16)),
-      onTap: onTap,
     );
   }
 }
