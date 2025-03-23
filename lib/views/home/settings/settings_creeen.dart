@@ -65,7 +65,7 @@ class SettingsScreen extends StatelessWidget {
                 _buildMenuItem(
                   context,
                   icon: Icons.person,
-                  text: "Thông tin tài khoản",
+                  text: "Tài khoản và bảo mật",
                   onTap:
                       () => Navigator.push(
                         context,
