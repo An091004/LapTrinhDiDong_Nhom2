@@ -65,13 +65,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         splitAmounts[member] = splitAmount;
       }
     } else {
-      // Tính tổng tỷ lệ
       double totalRatio = members.fold(0, (sum, member) {
         return sum +
             (double.tryParse(_splitControllers[member]?.text ?? '0') ?? 0);
       });
-
-      // Tính số tiền mỗi người phải trả
       for (var member in members) {
         double memberRatio =
             double.tryParse(_splitControllers[member]?.text ?? '0') ?? 0;
@@ -95,73 +92,52 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Thêm Chi Tiêu')),
+      appBar: AppBar(
+        title: Text(
+          'Thêm Chi Tiêu',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.teal,
+        foregroundColor: Colors.white,
+      ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Số tiền'),
-              ),
-              TextField(
-                controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Mô tả'),
-              ),
-              DropdownButtonFormField(
-                value: _selectedCategory,
-                items:
-                    categories.map((category) {
-                      return DropdownMenuItem(
-                        value: category,
-                        child: Text(category),
-                      );
-                    }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedCategory = value.toString();
-                  });
-                },
-                decoration: InputDecoration(labelText: 'Danh mục'),
+              _buildTextField(
+                'Số tiền',
+                _amountController,
+                TextInputType.number,
               ),
               SizedBox(height: 10),
-              Text('Ngày chi tiêu:'),
-              TextButton.icon(
-                icon: Icon(Icons.calendar_today),
-                label: Text(DateFormat('dd/MM/yyyy').format(_selectedDate)),
-                onPressed: () => _selectDate(context),
+              _buildTextField(
+                'Mô tả',
+                _descriptionController,
+                TextInputType.text,
               ),
               SizedBox(height: 10),
-              Text('Đính kèm hóa đơn:'),
-              _receiptImage != null
-                  ? Image.file(_receiptImage!, height: 100)
-                  : TextButton.icon(
-                    icon: Icon(Icons.attach_file),
-                    label: Text('Chọn ảnh'),
-                    onPressed: _pickImage,
-                  ),
+              _buildDropdown('Danh mục', categories, _selectedCategory, (
+                value,
+              ) {
+                setState(() {
+                  _selectedCategory = value.toString();
+                });
+              }),
+              const SizedBox(height: 10),
+              _buildDatePicker(),
+              const SizedBox(height: 10),
+              _buildImagePicker(),
+              const SizedBox(height: 10),
+              _buildDropdown('Người trả tiền', members, _payer, (value) {
+                setState(() {
+                  _payer = value.toString();
+                });
+              }),
               SizedBox(height: 10),
-              DropdownButtonFormField(
-                value: _payer,
-                items:
-                    members.map((member) {
-                      return DropdownMenuItem(
-                        value: member,
-                        child: Text(member),
-                      );
-                    }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _payer = value.toString();
-                  });
-                },
-                decoration: InputDecoration(labelText: 'Người trả tiền'),
-              ),
               SwitchListTile(
-                title: Text('Chia đều chi phí'),
+                title: const Text('Chia đều chi phí'),
                 value: _splitEqually,
                 onChanged: (value) {
                   setState(() {
@@ -177,25 +153,90 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 },
               ),
               if (!_splitEqually) ...[
-                SizedBox(height: 10),
-                Text('Nhập tỉ lệ chia:'),
-                Column(
-                  children:
-                      members.map((member) {
-                        return TextField(
-                          controller: _splitControllers[member],
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(labelText: '$member (%)'),
-                        );
-                      }).toList(),
-                ),
+                const SizedBox(height: 10),
+                _buildSplitRatioFields(),
               ],
-              SizedBox(height: 20),
-              ElevatedButton(onPressed: _saveExpense, child: Text('Lưu')),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _saveExpense,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                child: const Text('Lưu', style: TextStyle(color: Colors.white)),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(
+    String label,
+    TextEditingController controller,
+    TextInputType inputType,
+  ) {
+    return TextField(
+      controller: controller,
+      keyboardType: inputType,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+
+  Widget _buildDropdown(
+    String label,
+    List<String> items,
+    String value,
+    Function(String?) onChanged,
+  ) {
+    return DropdownButtonFormField(
+      value: value,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      items:
+          items
+              .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+              .toList(),
+      onChanged: onChanged,
+    );
+  }
+
+  Widget _buildDatePicker() {
+    return ListTile(
+      title: Text(
+        'Ngày chi tiêu: ${DateFormat('dd/MM/yyyy').format(_selectedDate)}',
+      ),
+      trailing: Icon(Icons.calendar_today, color: Colors.teal),
+      onTap: () => _selectDate(context),
+    );
+  }
+
+  Widget _buildImagePicker() {
+    return _receiptImage != null
+        ? Image.file(_receiptImage!, height: 100)
+        : TextButton.icon(
+          icon: Icon(Icons.attach_file, color: Colors.teal),
+          label: const Text('Chọn ảnh'),
+          onPressed: _pickImage,
+        );
+  }
+
+  Widget _buildSplitRatioFields() {
+    return Column(
+      children:
+          members.map((member) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _buildTextField(
+                '$member ()',
+                _splitControllers[member]!,
+                TextInputType.number,
+              ),
+            );
+          }).toList(),
     );
   }
 }

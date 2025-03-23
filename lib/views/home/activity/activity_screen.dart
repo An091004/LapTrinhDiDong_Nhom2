@@ -13,6 +13,18 @@ class ActivityScreen extends StatefulWidget {
 class _ActivityScreenState extends State<ActivityScreen> {
   String searchQuery = "";
   DateTime? selectedMonth;
+  Widget _buildDrawerItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+  ) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.black54),
+      title: Text(title, style: const TextStyle(fontSize: 16)),
+      onTap: onTap,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +50,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
         ),
         backgroundColor: Colors.blueAccent,
         elevation: 0,
+        centerTitle: true, // This will center the title
         actions: [
           IconButton(
             icon: Icon(Icons.search, color: Colors.white),
@@ -53,6 +66,46 @@ class _ActivityScreenState extends State<ActivityScreen> {
             },
           ),
         ],
+      ),
+
+      drawer: Drawer(
+        width: MediaQuery.of(context).size.width * 0.65,
+        child: Column(
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Colors.lightBlue),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: const Text(
+                  'Menu',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            _buildDrawerItem(
+              context,
+              Icons.home,
+              'Trang chủ',
+              () => Navigator.pop(context),
+            ),
+            _buildDrawerItem(
+              context,
+              Icons.settings,
+              'Cài đặt',
+              () => Navigator.pop(context),
+            ),
+            _buildDrawerItem(
+              context,
+              Icons.exit_to_app,
+              'Đăng xuất',
+              () => Navigator.pop(context),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -195,7 +248,7 @@ class ActivitySearchDelegate extends SearchDelegate<String> {
   Widget buildResults(BuildContext context) {
     onSearch(query);
     close(context, query);
-    return Container();
+    return Center(child: Text("Đang tìm kiếm..."));
   }
 
   @override
@@ -208,6 +261,10 @@ class ActivitySearchDelegate extends SearchDelegate<String> {
               ),
             )
             .toList();
+
+    if (searchResults.isEmpty) {
+      return Center(child: Text("Không tìm thấy kết quả"));
+    }
 
     return ListView.builder(
       itemCount: searchResults.length,
