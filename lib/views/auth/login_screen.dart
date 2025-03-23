@@ -94,8 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontWeight: FontWeight.w600, // Dùng w600 để mềm mại hơn
                     color: Colors.black87,
                     letterSpacing: 1.2, // Tăng khoảng cách chữ một chút
-                    fontFamily:
-                        'Poppins', // Thử dùng font Poppins (cần khai báo trong pubspec.yaml)
+                    fontFamily: 'Helvetica',
                     shadows: [
                       Shadow(
                         blurRadius: 6,
