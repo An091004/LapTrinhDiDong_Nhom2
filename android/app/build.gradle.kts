@@ -9,7 +9,11 @@ android {
     namespace = "com.example.flutter_qlchitieu"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+<<<<<<< HEAD
 
+=======
+    ndkVersion = "27.0.12077973"
+>>>>>>> main
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
