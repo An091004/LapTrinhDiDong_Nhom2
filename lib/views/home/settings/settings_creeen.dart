@@ -81,10 +81,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
               Text(
-                "Nhóm 2_Lập Trình Dinh Động",
+                "Nhóm 2_Lập Trình Di Động",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 18,
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
               ),

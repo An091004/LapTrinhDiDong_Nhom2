@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_qlchitieu/api/api_service.dart';
+import 'package:flutter_qlchitieu/models/user_model.dart';
+import 'package:flutter_qlchitieu/views/auth/login_screen.dart';
+import 'package:http/http.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -14,10 +18,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final ApiService _apiService = ApiService();
 
   bool _isObscure = true;
 
-  void _register() {
+  void _register() async {
     String username = _usernameController.text.trim();
     String email = _emailController.text.trim();
     String phone = _phoneController.text.trim();
@@ -38,7 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    if (!RegExp(r'^[0-9]{10,11}$').hasMatch(phone)) {
+    if (!RegExp(r'^(0|\+84)\d{9}$').hasMatch(phone)) {
       _showSnackBar('Số điện thoại không hợp lệ!', Colors.red);
       return;
     }
@@ -47,11 +52,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _showSnackBar('Mật khẩu xác nhận không khớp!', Colors.red);
       return;
     }
-
-    _showSnackBar('Đăng ký thành công!', Colors.green);
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.pop(context);
-    });
+    final request = RegisterRequest(
+      tenDangNhap: username,
+      email: email,
+      soDienThoai: phone,
+      matKhau: password,
+    );
+    try {
+      final response = await _apiService.register(request);
+      if (response.message == "Đăng ký thành công") {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Đăng ký thành công!")));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.message ?? 'Đăng ký thất bại!')),
+        );
+      }
+    } catch (e) {
+      String errorMessage;
+      print('Error details: $e');
+      if (e.toString().contains('400')) {
+        errorMessage = 'Email hoặc tên đăng nhập đã tồn tại!';
+      } else if (e.toString().contains('connection')) {
+        errorMessage = 'Không thể kết nối đến máy chủ, vui lòng kiểm tra mạng!';
+      } else {
+        errorMessage = 'Đã có lỗi xảy ra: $e';
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+    }
   }
 
   void _showSnackBar(String message, Color color) {

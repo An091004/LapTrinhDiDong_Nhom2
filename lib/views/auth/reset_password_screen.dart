@@ -1,75 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_qlchitieu/models/user_model.dart';
-import 'package:flutter_qlchitieu/views/auth/forgot_password_screen.dart';
-import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'register_screen.dart';
-import 'package:flutter_qlchitieu/views/home/hom_screen.dart';
 import 'package:flutter_qlchitieu/api/api_service.dart';
+import 'package:flutter_qlchitieu/models/user_model.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ResetPasswordScreen extends StatefulWidget {
+  final String email;
+
+  const ResetPasswordScreen({super.key, required this.email});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final TextEditingController _otpController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
   final ApiService _apiService = ApiService();
   bool _isObscure = true;
 
-  void _login() async {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+  void _resetPassword() async {
+    String otp = _otpController.text.trim();
+    String newPassword = _newPasswordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) {
+    if (otp.isEmpty || newPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Vui lòng nhập đầy đủ tài khoản và mật khẩu!'),
+          content: Text('Vui lòng nhập đầy đủ mã OTP và mật khẩu mới!'),
           backgroundColor: Colors.red,
         ),
       );
       return;
     }
-    final request = LoginRequest(email: email, matKhau: password);
+
+    final request = ResetPasswordRequest(
+      email: widget.email,
+      otpCode: otp,
+      newPassword: newPassword,
+    );
+
     try {
-      final response = await _apiService.login(request);
-     
-      if (response.token != null) {
-        await _saveToken(response.token!);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Đăng nhập thành công!")));
+      final response = await _apiService.resetPassword(request);
+      if (response.message == "Đặt lại mật khẩu thành công") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Đặt lại mật khẩu thành công!")),
+        );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
+          MaterialPageRoute(builder: (context) => LoginScreen()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message ?? 'Đăng nhập thất bại!')),
+          SnackBar(content: Text(response.message ?? 'Đặt lại mật khẩu thất bại!')),
         );
       }
     } catch (e) {
       String errorMessage;
-      print('Error details: $e'); // In lỗi chi tiết để debug
-      if (e.toString().contains('401')) {
-        errorMessage = 'Email hoặc mật khẩu không đúng!';
+      print('Error details: $e');
+      if (e.toString().contains('400')) {
+        errorMessage = 'OTP không hợp lệ hoặc đã hết hạn!';
+      } else if (e.toString().contains('404')) {
+        errorMessage = 'Email không tồn tại!';
       } else if (e.toString().contains('connection')) {
         errorMessage = 'Không thể kết nối đến máy chủ, vui lòng kiểm tra mạng!';
       } else {
         errorMessage = 'Đã có lỗi xảy ra: $e';
       }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+      );
     }
-  }
-
-  Future<void> _saveToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
   }
 
   @override
@@ -78,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height, // Đảm bảo full màn hình
+          height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/images/background.jpg'),
@@ -90,7 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo
                 Container(
                   padding: EdgeInsets.all(4),
                   decoration: BoxDecoration(
@@ -116,13 +114,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'QUẢN LÍ CHI TIÊU',
+                  'ĐẶT LẠI MẬT KHẨU',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 28, // Giảm nhẹ font để tránh thô ráp
-                    fontWeight: FontWeight.w600, // Dùng w600 để mềm mại hơn
+                    fontSize: 28,
+                    fontWeight: FontWeight.w600,
                     color: Colors.black87,
-                    letterSpacing: 1.2, // Tăng khoảng cách chữ một chút
+                    letterSpacing: 1.2,
                     fontFamily: 'Helvetica',
                     shadows: [
                       Shadow(
@@ -134,21 +132,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                // Text(
-                //   'Đăng nhập để tiếp tục',
-                //   style: TextStyle(color: Colors.grey[800], fontSize: 18),
-                // ),
-
-                // Form nhập liệu
+                Text(
+                  'Vui lòng nhập mã OTP và mật khẩu mới',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey[800], fontSize: 16),
+                ),
+                SizedBox(height: 20),
                 TextField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.text,
+                  controller: _otpController,
+                  keyboardType: TextInputType.number,
                   style: TextStyle(color: Colors.black87),
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.8),
-                    prefixIcon: Icon(Icons.person, color: Colors.grey[700]),
-                    hintText: 'Tài khoản...',
+                    prefixIcon: Icon(Icons.lock, color: Colors.grey[700]),
+                    hintText: 'Mã OTP...',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -156,14 +154,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 20),
                 TextField(
-                  controller: _passwordController,
+                  controller: _newPasswordController,
                   obscureText: _isObscure,
                   style: TextStyle(color: Colors.black87),
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.8),
                     prefixIcon: Icon(Icons.lock, color: Colors.grey[700]),
-                    hintText: 'Mật khẩu...',
+                    hintText: 'Mật khẩu mới...',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -180,9 +178,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _login,
+                  onPressed: _resetPassword,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue[700],
                     shape: RoundedRectangleBorder(
@@ -191,48 +189,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     minimumSize: Size(double.infinity, 50),
                   ),
                   child: Text(
-                    'ĐĂNG NHẬP',
+                    'ĐẶT LẠI MẬT KHẨU',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Chưa có tài khoản?",
-                      style: TextStyle(color: Colors.grey[800]),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterScreen(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Đăng ký ngay',
-                        style: TextStyle(color: Colors.blue[800]),
-                      ),
-                    ),
-                  ],
-                ),
-
+                SizedBox(height: 20),
                 TextButton(
                   onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ForgotPasswordScreen(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Quên mật khẩu',
-                        style: TextStyle(color: Colors.blue[800]),
-                      ),
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Quay lại',
+                    style: TextStyle(color: Colors.blue[800]),
+                  ),
                 ),
               ],
             ),
