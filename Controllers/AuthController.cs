@@ -78,15 +78,15 @@ namespace api_expenes_flutter.Controllers
 
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody] string email)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto request)
         {
-            var user = await _context.NguoiDung.FirstOrDefaultAsync(u => u.email == email);
+            var user = await _context.NguoiDung.FirstOrDefaultAsync(u => u.email == request.Email);
             if (user == null) return NotFound("Email không tồn tại");
 
             var otp = new Random().Next(100000, 999999).ToString();
             _context.OtpCodes.Add(new OtpCodes
             {
-                Email = email,
+                Email = request.Email,
                 OtpCode = otp,
                 ExpiredAt = DateTime.Now.AddMinutes(5)
             });
@@ -108,7 +108,7 @@ namespace api_expenes_flutter.Controllers
                 };
                 await client.SendMailAsync(new MailMessage(
                     from: "vonhut123a@gmail.com",
-                    to: email,
+                    to: request.Email,
                     subject: "Mã OTP khôi phục mật khẩu",
                     body: $"Mã OTP của bạn là: {otp}"
                 ));
@@ -194,6 +194,10 @@ namespace api_expenes_flutter.Controllers
             [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
             [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$", ErrorMessage = "Mật khẩu phải ít nhất 6 ký tự, gồm chữ hoa, chữ thường và số")]
             public required string MatKhau { get; set; }
+        }
+        public class ForgotPasswordDto
+        {
+            public required string Email { get; set; }
         }
     }
 }

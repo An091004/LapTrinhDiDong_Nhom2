@@ -138,7 +138,6 @@ E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\runtimes\win-a
 E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\Microsoft.AspNetCore.Razor.Language.dll
 E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\Microsoft.Build.dll
 E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\Microsoft.Build.Framework.dll
@@ -268,3 +267,4 @@ E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\System.Securit
 E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\System.Security.Cryptography.Xml.dll
 E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\LapTrinhDiDong\DoAnCuoiKi\api_expenes_flutter\obj\Debug\net8.0\api_expenes_flutter.sourcelink.json

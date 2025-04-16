@@ -8,8 +8,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "email",
-        "Type": "System.String",
+        "Name": "request",
+        "Type": "api_expenes_flutter.Controllers.AuthController\u002BForgotPasswordDto",
         "IsRequired": true
       }
     ],

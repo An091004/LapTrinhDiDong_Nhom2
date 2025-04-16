@@ -28,27 +28,27 @@ namespace api_expenes_flutter.Models
         public int Id { get; set; }
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
-        public string OtpCode { get; set; }
+        public required string Email { get; set; }
+        public required string OtpCode { get; set; }
         public DateTime ExpiredAt { get; set; }
     }
     public class OtpVerifyDto
     {
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
-        public string OtpCode { get; set; }
+        public required string Email { get; set; }
+        public required string OtpCode { get; set; }
     }
 
     public class ResetPasswordDto
     {
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public required string Email { get; set; }
         [Required]
-        public string OtpCode { get; set; }
+        public required string OtpCode { get; set; }
         [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$", ErrorMessage = "Mật khẩu phải ít nhất 6 ký tự, gồm chữ hoa, chữ thường và số")]
-        public string NewPassword { get; set; }
+        public required string NewPassword { get; set; }
     }
 }
