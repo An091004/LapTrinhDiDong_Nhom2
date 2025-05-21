@@ -1,17 +1,15 @@
 ﻿using api_expenes_flutter.Data;
 using api_expenes_flutter.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
-using System.Net.Mail;
-using System.Net;
 namespace api_expenes_flutter.Controllers
 {
     [Route("api/[controller]")]
@@ -60,20 +58,20 @@ namespace api_expenes_flutter.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> login([FromBody] LoginRequest request)
         {
-            
+
             var user = await _context.NguoiDung.FirstOrDefaultAsync(u => u.email == request.email);
-            if (user == null )
+            if (user == null)
             {
                 return Unauthorized(new { message = "Email không đúng" });
             }
-            var hasher=new PasswordHasher<NguoiDung>();
-            var result=hasher.VerifyHashedPassword(user,user.MatKhau,request.MatKhau);
+            var hasher = new PasswordHasher<NguoiDung>();
+            var result = hasher.VerifyHashedPassword(user, user.MatKhau, request.MatKhau);
             if (result == PasswordVerificationResult.Failed)
             {
                 return Unauthorized(new { message = "Mật khẩu không đúng" });
             }
             var token = GenerateJwtToken(user);
-            return Ok(new {Token=token});
+            return Ok(new { Token = token });
         }
 
 
@@ -164,9 +162,9 @@ namespace api_expenes_flutter.Controllers
             }
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.TenDangNhap),
-
+                new Claim(ClaimTypes.NameIdentifier, user.MaNguoiDung.ToString()),
                 new Claim(ClaimTypes.Email, user.email),
+                new Claim(ClaimTypes.Name, user.TenDangNhap),
 
 
             };
@@ -189,7 +187,7 @@ namespace api_expenes_flutter.Controllers
             [EmailAddress(ErrorMessage = "Email không hợp lệ")]
             public required string email { get; set; }
 
-            
+
 
             [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
             [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$", ErrorMessage = "Mật khẩu phải ít nhất 6 ký tự, gồm chữ hoa, chữ thường và số")]

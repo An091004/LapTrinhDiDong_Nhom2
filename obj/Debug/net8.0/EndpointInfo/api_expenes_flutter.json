@@ -160,159 +160,38 @@
         }
       }
     },
-    "/api/NguoiDungs": {
+    "/api/NguoiDungs/me": {
       "get": {
         "tags": [
           "NguoiDungs"
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NguoiDung"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NguoiDung"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NguoiDung"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "NguoiDungs"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NguoiDung"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NguoiDung"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/NguoiDung"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/NguoiDung"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NguoiDung"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NguoiDung"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
     },
-    "/api/NguoiDungs/{id}": {
-      "get": {
-        "tags": [
-          "NguoiDungs"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/NguoiDung"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NguoiDung"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NguoiDung"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/api/NguoiDungs/update": {
       "put": {
         "tags": [
           "NguoiDungs"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NguoiDung"
+                "$ref": "#/components/schemas/UpdateUserRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/NguoiDung"
+                "$ref": "#/components/schemas/UpdateUserRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/NguoiDung"
+                "$ref": "#/components/schemas/UpdateUserRequest"
               }
             }
           }
@@ -322,22 +201,44 @@
             "description": "OK"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/Settings": {
+      "get": {
         "tags": [
-          "NguoiDungs"
+          "Settings"
         ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Settings/update": {
+      "put": {
+        "tags": [
+          "Settings"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateSettingRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateSettingRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateSettingRequest"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -416,6 +317,10 @@
           "anhDaiDien": {
             "type": "string",
             "nullable": true
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -460,6 +365,45 @@
             "minLength": 1,
             "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,}$",
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateUserRequest": {
+        "required": [
+          "email",
+          "soDienThoai",
+          "tenDangNhap"
+        ],
+        "type": "object",
+        "properties": {
+          "tenDangNhap": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "soDienThoai": {
+            "minLength": 1,
+            "pattern": "^(0|\\+84)(\\d{9})$",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "updateSettingRequest": {
+        "type": "object",
+        "properties": {
+          "cheDoToi": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "thongBao": {
+            "type": "boolean",
+            "nullable": true
           }
         },
         "additionalProperties": false

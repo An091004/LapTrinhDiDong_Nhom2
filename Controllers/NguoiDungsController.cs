@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using api_expenes_flutter.Data;
+using api_expenes_flutter.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using api_expenes_flutter.Data;
-using api_expenes_flutter.Models;
-
+using System.Security.Claims;
 namespace api_expenes_flutter.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class NguoiDungsController : ControllerBase
@@ -20,89 +17,44 @@ namespace api_expenes_flutter.Controllers
         {
             _context = context;
         }
-
-        // GET: api/NguoiDungs
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<NguoiDung>>> GetUsers()
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrenUser()
         {
-            return await _context.NguoiDung.ToListAsync();
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { Message = "không xác định được người dùng" });
+            }
+            var userId = int.Parse(userIdClaim.Value);
+            var user = await _context.NguoiDung.Where(u => u.MaNguoiDung == userId).Select(u => new { u.MaNguoiDung, u.TenDangNhap, u.email, u.SoDienThoai, u.AnhDaiDien, u.NgayTao }).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound(new { Message = "không tìm thấy người dùng" });
+            }
+            return Ok(user);
         }
-
-        // GET: api/NguoiDungs/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<NguoiDung>> GetNguoiDung(int id)
+        [HttpPut("update")]
+        public async Task<IActionResult> updateUser([FromBody] UpdateUserRequest request)
         {
-            var nguoiDung = await _context.NguoiDung.FindAsync(id);
-
-            if (nguoiDung == null)
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
             {
-                return NotFound();
+                return Unauthorized(new { Message = "không xác định được người dùng" });
+
             }
-
-            return nguoiDung;
-        }
-
-        // PUT: api/NguoiDungs/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutNguoiDung(int id, NguoiDung nguoiDung)
-        {
-            if (id != nguoiDung.MaNguoiDung)
+            var userId = int.Parse(userIdClaim.Value);
+            var user = await _context.NguoiDung.FindAsync(userId);//tìm người dùng trong db
+            if (user == null)
             {
-                return BadRequest();
+                return NotFound(new { Message = "không tìm thấy người dùng" });
             }
-
-            _context.Entry(nguoiDung).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NguoiDungExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/NguoiDungs
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<NguoiDung>> PostNguoiDung(NguoiDung nguoiDung)
-        {
-            _context.NguoiDung.Add(nguoiDung);
+            //cập nhật thông tin người dùng
+            user.TenDangNhap = request.TenDangNhap ?? user.TenDangNhap;//dấu ?? có tác dụng nếu giá trị null thì giữ nguyên,nếu không null thì thay đổi
+            user.email = request.email ?? user.email;
+            user.SoDienThoai = request.SoDienThoai ?? user.SoDienThoai;
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetNguoiDung", new { id = nguoiDung.MaNguoiDung }, nguoiDung);
+            return Ok(new { Message = "Cập nhật user thành công" });
         }
 
-        // DELETE: api/NguoiDungs/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteNguoiDung(int id)
-        {
-            var nguoiDung = await _context.NguoiDung.FindAsync(id);
-            if (nguoiDung == null)
-            {
-                return NotFound();
-            }
-
-            _context.NguoiDung.Remove(nguoiDung);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool NguoiDungExists(int id)
-        {
-            return _context.NguoiDung.Any(e => e.MaNguoiDung == id);
-        }
     }
 }

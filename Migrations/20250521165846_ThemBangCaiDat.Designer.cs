@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_expenes_flutter.Data;
 
@@ -11,9 +12,11 @@ using api_expenes_flutter.Data;
 namespace api_expenes_flutter.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250521165846_ThemBangCaiDat")]
+    partial class ThemBangCaiDat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace api_expenes_flutter.Migrations
 
                     b.HasKey("MaCaiDat");
 
-                    b.ToTable("CaiDat", (string)null);
+                    b.ToTable("CaiDat");
                 });
 
             modelBuilder.Entity("api_expenes_flutter.Models.NguoiDung", b =>
@@ -76,7 +79,7 @@ namespace api_expenes_flutter.Migrations
 
                     b.HasKey("MaNguoiDung");
 
-                    b.ToTable("NguoiDung", (string)null);
+                    b.ToTable("NguoiDung");
                 });
 
             modelBuilder.Entity("api_expenes_flutter.Models.OtpCodes", b =>
@@ -100,7 +103,7 @@ namespace api_expenes_flutter.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OtpCodes", (string)null);
+                    b.ToTable("OtpCodes");
                 });
 #pragma warning restore 612, 618
         }
