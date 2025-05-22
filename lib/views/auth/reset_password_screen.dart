@@ -22,10 +22,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     String otp = _otpController.text.trim();
     String newPassword = _newPasswordController.text.trim();
 
-    if (otp.isEmpty || newPassword.isEmpty) {
+    if (newPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Vui lòng nhập đầy đủ mã OTP và mật khẩu mới!'),
+          content: Text('Vui lòng nhập mã Otp và mật khẩu mới!'),
           backgroundColor: Colors.red,
         ),
       );
@@ -50,7 +50,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message ?? 'Đặt lại mật khẩu thất bại!')),
+          SnackBar(
+            content: Text(response.message ?? 'Đặt lại mật khẩu thất bại!'),
+          ),
         );
       }
     } catch (e) {
@@ -65,9 +67,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       } else {
         errorMessage = 'Đã có lỗi xảy ra: $e';
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
     }
   }
 
@@ -133,7 +135,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Vui lòng nhập mã OTP và mật khẩu mới',
+                  'Vui lòng nhập mật khẩu mới',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey[800], fontSize: 16),
                 ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_qlchitieu/api/api_service.dart';
 import 'package:flutter_qlchitieu/models/user_model.dart';
-import 'verify_otp_screen.dart';
+import 'package:flutter_qlchitieu/views/auth/reset_password_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -32,13 +32,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     try {
       final response = await _apiService.forgotPassword(request);
       if (response.message == "Đã gửi OTP về email") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Đã gửi OTP về email!")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Đã gửi OTP về email!")));
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VerifyOtpScreen(email: email),
+            builder: (context) => ResetPasswordScreen(email: email),
           ),
         );
       } else {
@@ -58,9 +58,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       } else {
         errorMessage = 'Đã có lỗi xảy ra: $e';
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
     }
   }
 

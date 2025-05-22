@@ -50,31 +50,28 @@ class RegisterRequest {
     };
   }
 }
+
 class RegisterResponse {
   final String? message;
 
   RegisterResponse({this.message});
 
   factory RegisterResponse.fromJson(Map<String, dynamic> json) {
-    return RegisterResponse(
-      message: json['message'],
-    );
+    return RegisterResponse(message: json['message']);
   }
 
   factory RegisterResponse.fromError(String error) {
     return RegisterResponse(message: error);
   }
-  
 }
+
 class ForgotPasswordRequest {
   final String email;
 
   ForgotPasswordRequest({required this.email});
 
   Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-    };
+    return {'email': email};
   }
 }
 
@@ -85,10 +82,7 @@ class VerifyOtpRequest {
   VerifyOtpRequest({required this.email, required this.otpCode});
 
   Map<String, dynamic> toJson() {
-    return {
-      'Email': email,
-      'OtpCode': otpCode,
-    };
+    return {'Email': email, 'OtpCode': otpCode};
   }
 }
 
@@ -104,11 +98,7 @@ class ResetPasswordRequest {
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      'Email': email,
-      'OtpCode': otpCode,
-      'NewPassword': newPassword,
-    };
+    return {'Email': email, 'OtpCode': otpCode, 'NewPassword': newPassword};
   }
 }
 
@@ -118,9 +108,7 @@ class ForgotPasswordResponse {
   ForgotPasswordResponse({this.message});
 
   factory ForgotPasswordResponse.fromJson(Map<String, dynamic> json) {
-    return ForgotPasswordResponse(
-      message: json['message'],
-    );
+    return ForgotPasswordResponse(message: json['message']);
   }
 
   factory ForgotPasswordResponse.fromError(String error) {
