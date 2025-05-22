@@ -34,7 +34,7 @@ namespace api_expenes_flutter.Controllers
             return Ok(user);
         }
         [HttpPut("update")]
-        public async Task<IActionResult> updateUser([FromBody] UpdateUserRequest request)
+        public async Task<IActionResult> updateInfoUser([FromBody] UpdateUserRequest request)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)

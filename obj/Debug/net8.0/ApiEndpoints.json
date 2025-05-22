@@ -91,7 +91,7 @@
   },
   {
     "ContainingType": "api_expenes_flutter.Controllers.NguoiDungsController",
-    "Method": "updateUser",
+    "Method": "updateInfoUser",
     "RelativePath": "api/NguoiDungs/update",
     "HttpMethod": "PUT",
     "IsController": true,

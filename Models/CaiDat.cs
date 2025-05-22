@@ -9,7 +9,7 @@ namespace api_expenes_flutter.Models
         public int MaNguoiDung { get; set; }
         public bool CheDoToi { get; set; }
         public bool ThongBao { get; set; }
-        public string gioitinh { get; set; }
+        
     }
     public class updateSettingRequest
     {
